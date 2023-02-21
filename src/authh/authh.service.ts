@@ -11,6 +11,7 @@ export class AuthService {
       const { password, ...result } = user;
       return result;
     }
+    console.log('null döndü');
     return null;
   }
 }

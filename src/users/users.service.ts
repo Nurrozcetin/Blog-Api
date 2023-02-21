@@ -3,19 +3,18 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { userInfo } from 'os';
 import { UserEntity } from './entity/user.entity';
-
 @Injectable()
 export class UsersService {
-  findUnique() {
-    throw new Error('Method not implemented.');
-  }
   constructor(private prisma: PrismaService) {}
+
   async create(createUserDto: CreateUserDto) {
     return await this.prisma.user.create({
       data: { ...createUserDto },
     });
   }
-
+  async findUnique() {
+    throw new Error('Method not implemented.');
+  }
   async findAll() {
     console.log('Returns all user');
     return await this.prisma.user.findMany({});
