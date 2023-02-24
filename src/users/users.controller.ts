@@ -23,13 +23,12 @@ export class UsersController {
   constructor(private usersservice: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
     return this.usersservice.create(createUserDto);
   }
 
   @Get()
-  findall(@Res() res: Response) {
-    res.status(HttpStatus.OK).json([]);
+  findall() {
     return this.usersservice.findAll();
   }
 

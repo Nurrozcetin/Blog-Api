@@ -1,22 +1,44 @@
-import { Injectable, Param } from '@nestjs/common';
+import { PasswordService } from 'src/auth/services/password.service';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { userInfo } from 'os';
-import { UserEntity } from './entity/user.entity';
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => PasswordService))
+    private passwordService: PasswordService,
+  ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    return await this.prisma.user.create({
-      data: { ...createUserDto },
+  async create(data: CreateUserDto) {
+    const encryptedPassword = await this.passwordService.hashPassword(
+      data.password,
+    );
+    const { password, ...user } = await this.prisma.user.create({
+      data: {
+        ...data,
+        password: encryptedPassword,
+      },
     });
+    return user;
   }
-  async findUnique() {
-    throw new Error('Method not implemented.');
+
+  async findByEmail(email: string): Promise<CreateUserDto | undefined> {
+    const user = await this.prisma.user.findFirst({
+      where: { email },
+    });
+    if (!user) {
+      throw new NotFoundException();
+    }
+    return user;
   }
+
   async findAll() {
-    console.log('Returns all user');
     return await this.prisma.user.findMany({});
   }
 
@@ -27,13 +49,7 @@ export class UsersService {
       },
     });
   }
-  async findByEmail(email: string) {
-    return await this.prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
-  }
+
   async delete(id: number) {
     return await this.prisma.user.delete({
       where: {
