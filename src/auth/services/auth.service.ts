@@ -1,4 +1,3 @@
-import { compare } from 'bcrypt';
 import { PasswordService } from 'src/auth/services/password.service';
 import { UsersService } from '../../users/users.service';
 import { Injectable } from '@nestjs/common';
