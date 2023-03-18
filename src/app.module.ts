@@ -11,9 +11,20 @@ import { AuthModule } from 'src/auth/auth.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PostModule } from './post/post.module';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
-  imports: [PrismaModule, AuthModule, UsersModule, PostModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    UsersModule,
+    PostModule,
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
+  ],
   providers: [
     UsersService,
     PrismaService,
