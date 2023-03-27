@@ -13,6 +13,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { PostModule } from './post/post.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { MulterModule } from '@nestjs/platform-express/multer';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { APP_GUARD } from '@nestjs/core';
     AuthModule,
     UsersModule,
     PostModule,
+    MulterModule.register({ dest: './uploads' }),
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,

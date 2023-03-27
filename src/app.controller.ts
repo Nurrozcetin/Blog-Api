@@ -7,8 +7,14 @@ import {
   UseGuards,
   Get,
   Body,
+  UseInterceptors,
+  UploadedFile,
+  Res,
+  Param,
 } from '@nestjs/common';
 import { AuthService } from './auth/services/auth.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 @Controller('/auth')
 export class AppController {
@@ -28,5 +34,18 @@ export class AppController {
       message: 'This  route is protected, but this user has access',
       user: req.user,
     };
+  }
+
+  @Post('/file')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './public/uploads',
+      }),
+    }),
+  )
+  handleUpload(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+    return 'File upload';
   }
 }
